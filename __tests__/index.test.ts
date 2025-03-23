@@ -16,8 +16,8 @@ jest.mock('fs', () => ({
   readFileSync: jest.fn(),
 }));
 
-jest.mock('@ai-sdk/google-generative-ai', () => ({
-  GoogleGenerativeAI: jest.fn().mockReturnValue(jest.fn()),
+jest.mock('@ai-sdk/google', () => ({
+  google: jest.fn().mockReturnValue(jest.fn()),
 }));
 
 jest.mock('ai', () => ({
