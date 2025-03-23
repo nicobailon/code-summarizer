@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "ai": "^2.0.0",
-    "@ai-sdk/google-generative-ai": "^1.0.0",
+    "@ai-sdk/google": "^1.0.0",
     "commander": "^10.0.0",
     "dotenv": "^16.0.0",
     "ignore": "^5.2.0",
