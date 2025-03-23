@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import { jest } from '@jest/globals';
 import { findCodeFiles, GeminiLLM, summarizeFiles, SummaryOptions } from '../index';
 
-// Only mock the generateText function, not the actual file system operations
+// Only mock the streamText function, not the actual file system operations
 jest.mock('ai', () => ({
-  generateText: jest.fn().mockImplementation(() => Promise.resolve('Mocked summary for testing'))
+  streamText: jest.fn().mockImplementation(() => Promise.resolve('Mocked summary for testing'))
 }));
 
 jest.mock('@ai-sdk/google', () => ({
@@ -73,15 +73,15 @@ describe('Mock Codebase Integration Tests', () => {
     expect(highDetailSummaries[0].summary).toBe('Mocked summary for testing');
     
     // Verify the options were passed correctly
-    const { generateText } = require('ai');
-    const mockCalls = generateText.mock.calls;
+    const { streamText } = require('ai');
+    const mockCalls = streamText.mock.calls;
     
     // Find calls that include specific detail levels in their prompts
-    const lowDetailCall = mockCalls.find((call: any) => 
+    const lowDetailCall = mockCalls.find((call: any[]) => 
       call[0]?.prompt?.includes('Keep it very brief')
     );
     
-    const highDetailCall = mockCalls.find((call: any) => 
+    const highDetailCall = mockCalls.find((call: any[]) => 
       call[0]?.prompt?.includes('detailed analysis')
     );
     
