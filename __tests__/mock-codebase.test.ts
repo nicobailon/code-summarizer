@@ -1,15 +1,15 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { jest } from '@jest/globals';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { findCodeFiles, GeminiLLM, summarizeFiles, SummaryOptions } from '../index';
 
 // Only mock the streamText function, not the actual file system operations
-jest.mock('ai', () => ({
-  streamText: jest.fn().mockImplementation(() => Promise.resolve('Mocked summary for testing'))
+vi.mock('ai', () => ({
+  streamText: vi.fn().mockImplementation(() => Promise.resolve('Mocked summary for testing'))
 }));
 
-jest.mock('@ai-sdk/google', () => ({
-  google: jest.fn().mockReturnValue(jest.fn())
+vi.mock('@ai-sdk/google', () => ({
+  google: vi.fn().mockReturnValue(vi.fn())
 }));
 
 // This test uses actual file operations on the mock codebase
