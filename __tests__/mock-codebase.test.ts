@@ -8,8 +8,8 @@ jest.mock('ai', () => ({
   generateText: jest.fn().mockResolvedValue('Mocked summary for testing')
 }));
 
-jest.mock('@ai-sdk/google-generative-ai', () => ({
-  GoogleGenerativeAI: jest.fn().mockReturnValue(jest.fn())
+jest.mock('@ai-sdk/google', () => ({
+  google: jest.fn().mockReturnValue(jest.fn())
 }));
 
 // This test uses actual file operations on the mock codebase
