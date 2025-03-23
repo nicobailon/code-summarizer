@@ -24,7 +24,7 @@ jest.mock('@ai-sdk/google', () => ({
 }));
 
 jest.mock('ai', () => ({
-  generateText: jest.fn(),
+  streamText: jest.fn(),
 }));
 
 jest.mock('ignore', () => {
@@ -51,10 +51,10 @@ import {
   LLM,
   FileSummary
 } from '../index';
-import { generateText } from 'ai';
+import { streamText } from 'ai';
 
-// Helper type to properly mock functions
-type MockedFunction<T extends (...args: any[]) => any> = jest.Mock<ReturnType<T>, Parameters<T>>;
+// Helper type for Jest mocks
+type MockFunction = jest.Mock<any, any>;
 
 describe('Code Summarizer', () => {
   beforeEach(() => {
@@ -138,8 +138,8 @@ describe('Code Summarizer', () => {
   describe('GeminiLLM', () => {
     it('should respect summary options', async () => {
       // Mock implementation
-      const mockedGenerateText = generateText as jest.Mock;
-      mockedGenerateText.mockResolvedValue('Mocked summary');
+      const mockedStreamText = streamText as MockFunction;
+      mockedStreamText.mockResolvedValue('Mocked summary');
       
       const llm = new GeminiLLM('test-api-key');
       const options: SummaryOptions = {
@@ -149,16 +149,16 @@ describe('Code Summarizer', () => {
       
       await llm.summarize('function test() {}', 'JavaScript', options);
       
-      // Check if generateText was called with the right parameters
-      expect(mockedGenerateText).toHaveBeenCalled();
-      const callArg = mockedGenerateText.mock.calls[0][0];
+      // Check if streamText was called with the right parameters
+      expect(mockedStreamText).toHaveBeenCalled();
+      const callArg = mockedStreamText.mock.calls[0][0];
       expect(callArg.prompt).toContain('detailed analysis');
       expect(callArg.prompt).toContain('1000 characters');
     });
     
     it('should handle API errors gracefully', async () => {
-      const mockedGenerateText = generateText as jest.Mock;
-      mockedGenerateText.mockRejectedValue(new Error('API error'));
+      const mockedStreamText = streamText as MockFunction;
+      mockedStreamText.mockRejectedValue(new Error('API error'));
       
       const llm = new GeminiLLM('test-api-key');
       const result = await llm.summarize('function test() {}', 'JavaScript');
@@ -167,13 +167,13 @@ describe('Code Summarizer', () => {
     });
 
     it('should use default options when none provided', async () => {
-      const mockedGenerateText = generateText as jest.Mock;
-      mockedGenerateText.mockResolvedValue('Default summary');
+      const mockedStreamText = streamText as MockFunction;
+      mockedStreamText.mockResolvedValue('Default summary');
       
       const llm = new GeminiLLM('test-api-key');
       await llm.summarize('function test() {}', 'JavaScript');
       
-      const callArg = mockedGenerateText.mock.calls[0][0];
+      const callArg = mockedStreamText.mock.calls[0][0];
       
       // Should not contain detail level specific text
       expect(callArg.prompt).not.toContain('very brief');
