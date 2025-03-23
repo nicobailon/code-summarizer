@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import dotenv from 'dotenv';
 import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { streamText } from 'ai';
 import ignore from 'ignore';
 import { Command } from 'commander';
 
@@ -51,7 +51,7 @@ Keep the summary under ${summaryOptions.maxLength} characters.
 
 ${code}`;
       
-      const result = await generateText({
+      const result = await streamText({
         model: google('gemini-2.0-flash-exp'),
         prompt
       });
