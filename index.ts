@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@ai-sdk/google-generative-ai';
+import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import ignore from 'ignore';
 import { Command } from 'commander';
@@ -51,12 +51,8 @@ Keep the summary under ${summaryOptions.maxLength} characters.
 
 ${code}`;
       
-      const googleAI = GoogleGenerativeAI({
-        apiKey: this.apiKey,
-      });
-      
       const result = await generateText({
-        model: googleAI('gemini-2.0-flash-exp'),
+        model: google('gemini-2.0-flash-exp'),
         prompt
       });
 
