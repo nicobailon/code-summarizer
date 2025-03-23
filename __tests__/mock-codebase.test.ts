@@ -5,7 +5,7 @@ import { findCodeFiles, GeminiLLM, summarizeFiles, SummaryOptions } from '../ind
 
 // Only mock the generateText function, not the actual file system operations
 jest.mock('ai', () => ({
-  generateText: jest.fn().mockResolvedValue('Mocked summary for testing')
+  generateText: jest.fn().mockImplementation(() => Promise.resolve('Mocked summary for testing'))
 }));
 
 jest.mock('@ai-sdk/google', () => ({
@@ -74,16 +74,26 @@ describe('Mock Codebase Integration Tests', () => {
     
     // Verify the options were passed correctly
     const { generateText } = require('ai');
-    const lowDetailCall = generateText.mock.calls.find(call => 
-      call[0].prompt.includes('Keep it very brief')
+    const mockCalls = generateText.mock.calls;
+    
+    // Find calls that include specific detail levels in their prompts
+    const lowDetailCall = mockCalls.find((call: any) => 
+      call[0]?.prompt?.includes('Keep it very brief')
     );
-    const highDetailCall = generateText.mock.calls.find(call => 
-      call[0].prompt.includes('detailed analysis')
+    
+    const highDetailCall = mockCalls.find((call: any) => 
+      call[0]?.prompt?.includes('detailed analysis')
     );
     
     expect(lowDetailCall).toBeTruthy();
     expect(highDetailCall).toBeTruthy();
-    expect(lowDetailCall[0].prompt).toContain('100 characters');
-    expect(highDetailCall[0].prompt).toContain('1000 characters');
+    
+    if (lowDetailCall) {
+      expect(lowDetailCall[0].prompt).toContain('100 characters');
+    }
+    
+    if (highDetailCall) {
+      expect(highDetailCall[0].prompt).toContain('1000 characters');
+    }
   });
 });
